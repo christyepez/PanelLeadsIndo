@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import zipfile
 from pathlib import Path
 
@@ -38,7 +37,6 @@ def extract_pbix(pbix: Path, output_root: Path, project_name: str) -> None:
                 target.write_bytes(archive.read(name))
 
         if "DiagramLayout" in names:
-            # PBIX stores this file as UTF-16LE JSON.
             raw = archive.read("DiagramLayout")
             text = raw.decode("utf-16-le")
             parsed = json.loads(text)
@@ -62,7 +60,7 @@ def extract_pbix(pbix: Path, output_root: Path, project_name: str) -> None:
     )
 
     pbip = {
-        "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/pbip/pbipProperties/1.0.0/schema.json",
+        "$schema": "https://developer.microsoft.com/json-schemas/fabric/pbip/pbipProperties/1.0.0/schema.json",
         "version": "1.0",
         "artifacts": [
             {
@@ -71,6 +69,9 @@ def extract_pbix(pbix: Path, output_root: Path, project_name: str) -> None:
                 }
             }
         ],
+        "settings": {
+            "enableAutoRecovery": True
+        },
     }
     (output_root / f"{project_name}.pbip").write_text(
         json.dumps(pbip, ensure_ascii=False, indent=2) + "\n",
