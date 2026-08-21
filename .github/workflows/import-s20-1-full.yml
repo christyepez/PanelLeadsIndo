@@ -26,11 +26,11 @@ jobs:
         shell: bash
         run: |
           count=$(find .github -maxdepth 1 -name 's20_1_payload.part*' | wc -l)
-          if [ "$count" -eq 14 ]; then
+          if [ "$count" -eq 33 ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "Waiting for all 14 payload parts; currently: $count"
+            echo "Waiting for all 33 payload parts; currently: $count"
           fi
 
       - name: Decode and extract S20.1
