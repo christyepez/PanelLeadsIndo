@@ -1,6 +1,5 @@
 name: Import S20.1 Full Project
 
-# Trigger import through a normal contents commit.
 on:
   push:
     branches:
@@ -8,6 +7,7 @@ on:
     paths:
       - '.github/s20_1_payload.part*'
       - '.github/workflows/import-s20-1.yml'
+      - '.github/import-trigger.txt'
 
 permissions:
   contents: write
@@ -27,6 +27,7 @@ jobs:
         run: |
           cat .github/s20_1_payload.part* > /tmp/s20_1.tar.xz
           rm -f .github/s20_1_payload.part*
+          rm -f .github/import-trigger.txt
           rm -f .github/workflows/import-s20-1.yml
 
       - name: Extract S20.1
@@ -45,8 +46,6 @@ jobs:
           test -f pnl_Leads_MKT.SemanticModel/definition/relationships.tmdl
           test -f scripts/Validate-PBIP.ps1
           test -f .github/workflows/validate-pbip.yml
-          count=$(find . -type f | wc -l)
-          echo "Files in checkout: $count"
 
       - name: Commit complete S20.1
         shell: bash
