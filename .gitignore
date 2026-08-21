@@ -1,0 +1,17 @@
+# Power BI Project local/cache files
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Power BI binaries are migration/build artifacts, not source of truth
+*.pbix
+*.pbit
+
+# OS / editors
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
