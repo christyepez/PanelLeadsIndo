@@ -5,7 +5,7 @@ on:
     branches:
       - release/s20.1-full
     paths:
-      - '.github/s20_1_payload.part*'
+      - '.github/s20_1_payload.tar.xz'
       - '.github/workflows/import-s20-1-full.yml'
 
 permissions:
@@ -21,27 +21,22 @@ jobs:
           ref: release/s20.1-full
           fetch-depth: 0
 
-      - name: Check complete payload
+      - name: Check payload
         id: payload
         shell: bash
         run: |
-          count=$(find .github -maxdepth 1 -name 's20_1_payload.part*' | wc -l)
-          if [ "$count" -eq 6 ]; then
+          if [ -f .github/s20_1_payload.tar.xz ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "Waiting for all 6 payload parts; currently: $count"
           fi
 
-      - name: Decode and extract S20.1
+      - name: Extract S20.1
         if: steps.payload.outputs.exists == 'true'
         shell: bash
         run: |
-          cat .github/s20_1_payload.part* > /tmp/s20_1.b64
-          base64 -d /tmp/s20_1.b64 > /tmp/s20_1.tar.xz
-          rm -f .github/s20_1_payload.part*
-          tar -xJf /tmp/s20_1.tar.xz -C .
-          rm -f /tmp/s20_1.b64 /tmp/s20_1.tar.xz
+          tar -xJf .github/s20_1_payload.tar.xz -C .
+          rm -f .github/s20_1_payload.tar.xz
 
       - name: Validate required PBIP artifacts
         if: steps.payload.outputs.exists == 'true'
