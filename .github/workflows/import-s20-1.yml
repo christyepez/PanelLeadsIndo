@@ -1,5 +1,6 @@
 name: Import S20.1 Full Project
 
+# Trigger import through a normal contents commit.
 on:
   push:
     branches:
