@@ -26,11 +26,11 @@ jobs:
         shell: bash
         run: |
           count=$(find .github -maxdepth 1 -name 's20_1_payload.part*' | wc -l)
-          if [ "$count" -eq 33 ]; then
+          if [ "$count" -eq 6 ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
-            echo "Waiting for all 33 payload parts; currently: $count"
+            echo "Waiting for all 6 payload parts; currently: $count"
           fi
 
       - name: Decode and extract S20.1
@@ -38,10 +38,10 @@ jobs:
         shell: bash
         run: |
           cat .github/s20_1_payload.part* > /tmp/s20_1.b64
-          base64 -d /tmp/s20_1.b64 > /tmp/s20_1.zip
+          base64 -d /tmp/s20_1.b64 > /tmp/s20_1.tar.xz
           rm -f .github/s20_1_payload.part*
-          unzip -oq /tmp/s20_1.zip -d .
-          rm -f /tmp/s20_1.b64 /tmp/s20_1.zip
+          tar -xJf /tmp/s20_1.tar.xz -C .
+          rm -f /tmp/s20_1.b64 /tmp/s20_1.tar.xz
 
       - name: Validate required PBIP artifacts
         if: steps.payload.outputs.exists == 'true'
