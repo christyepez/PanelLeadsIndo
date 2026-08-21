@@ -5,7 +5,7 @@ on:
     branches:
       - release/s20.1-full
     paths:
-      - '.github/s20_1_payload.tar.xz'
+      - '.github/s20_1_payload.part*'
       - '.github/workflows/import-s20-1-full.yml'
 
 permissions:
@@ -21,22 +21,26 @@ jobs:
           ref: release/s20.1-full
           fetch-depth: 0
 
-      - name: Check payload
+      - name: Check complete payload
         id: payload
         shell: bash
         run: |
-          if [ -f .github/s20_1_payload.tar.xz ]; then
+          count=$(find .github -maxdepth 1 -name 's20_1_payload.part*' | wc -l)
+          if [ "$count" -eq 6 ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "Waiting for all 6 binary payload parts; currently: $count"
           fi
 
-      - name: Extract S20.1
+      - name: Assemble and extract S20.1
         if: steps.payload.outputs.exists == 'true'
         shell: bash
         run: |
-          tar -xJf .github/s20_1_payload.tar.xz -C .
-          rm -f .github/s20_1_payload.tar.xz
+          cat .github/s20_1_payload.part* > /tmp/s20_1.tar.xz
+          rm -f .github/s20_1_payload.part*
+          tar -xJf /tmp/s20_1.tar.xz -C .
+          rm -f /tmp/s20_1.tar.xz
 
       - name: Validate required PBIP artifacts
         if: steps.payload.outputs.exists == 'true'
@@ -48,7 +52,8 @@ jobs:
           test -f pnl_Leads_MKT.SemanticModel/definition/model.tmdl
           test -f scripts/Validate-PBIP.ps1
           test -f .github/workflows/validate-pbip.yml
-          echo "S20.1 required artifacts OK"
+          count=$(find . -type f | wc -l)
+          echo "S20.1 required artifacts OK; files in checkout: $count"
 
       - name: Commit full S20.1 project
         if: steps.payload.outputs.exists == 'true'
