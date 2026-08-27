@@ -1,43 +1,26 @@
-# LeadEjecutivo V1.28 — Business Metrics / YTD / Goals / Advisors
+# LeadEjecutivo V1.28.4 — Release validada
 
-Release branch de trabajo. **No mergear a `main` hasta validar apertura y refresh en Power BI Desktop.**
-
-## Base
-- Punto de partida de trabajo: LeadEjecutivo V1.27.
-- Fuentes principales de negocio: reporte 615 + histórico 387.
-- Salesforce se usa únicamente como enriquecimiento de origen/canal cuando el 615 no trae fuente.
+Release validada manualmente en Power BI Desktop el 2026-08-27: el panel abrió correctamente y actualizó datos.
 
 ## Rama
 `release/leadejecutivo-v1.28-business-metrics`
 
-## Paquete candidato
-`LeadEjecutivo_V1.28_BusinessMetricsYTDGoalsAdvisor.zip`
+## Paquete validado
+`LeadEjecutivo_V1.28.4_TMDLIndentationClean.zip`
 
-SHA-256: `c1b824b9f31a8eff277da452399a0424db66e8d2b7b6066b281a6340225f2d5b`
+SHA-256: `c4a159976b82aa0ae2d6a3e3c5f37dbda14e2c7a1a15cdf95c97319c3b6c72f5`
 
-## Ajustes
-- Leads del Journey calculados desde admisiones (615), no desde el volumen general de Salesforce.
-- Enriquecimiento de origen por Salesforce mediante identificación, email o teléfono cuando Fuente del 615 está vacía.
-- Normalización de META / WHATSAPP / TIKTOK / GOOGLE / WEB.
-- Proyección de cierre mensual con días hábiles lunes a viernes.
-- Journey: comparativos YTD por mes A24/A25/A26 y B24/B25/B26.
-- Grados: comparativos mensuales A24/A25/A26 y B24/B25/B26.
-- Posgrados: comparativos mensuales A24/A25/A26 y B24/B25/B26.
-- Conversión por asesor: matrícula exige FechaMatricula real.
-- Barras categóricas ordenadas de mayor a menor.
-- Comparativos con paleta institucional morado/naranja.
-- Loader de metas B26 reforzado para detectar encabezados y metas separadas Grado/Posgrado.
+## Estado final validado
+- Apertura PBIP: OK.
+- Refresh de datos: OK.
+- 615 y 387 se mantienen como fuentes principales de negocio.
+- Salesforce fue retirado de la carga en la variante estable para evitar dependencia y bloqueo de apertura.
+- Funnel Journey se alimenta desde FactAdmision615.
+- Tablas legacy/no usadas de Salesforce retiradas del modelo estable.
+- Correcciones TMDL aplicadas en expressions.tmdl y FactAdmision615.tmdl.
+- Barrido de indentación TMDL completado sin secuencias `\\t` literales.
 
-## Validación estática
-- JSON PBIR: 104 archivos parseados correctamente.
-- Se validaron bloques TMDL con fences completos.
-- Se bloqueó el patrón M inseguro `and` seguido de `let` sin paréntesis.
+## Decisión de release
+GO para merge a `main`.
 
-## Gate
-La release permanece en rama hasta confirmar en Power BI Desktop:
-1. apertura sin error PBIP/TMDL/M;
-2. refresh 615/387/Salesforce/metas;
-3. metas Grado/Posgrado con valores;
-4. origen META/WHATSAPP/TIKTOK según datos disponibles;
-5. YTD mensual visible;
-6. conversión de asesores no artificialmente en 100%.
+Esta versión pasa a ser el punto validado de continuidad para los siguientes ajustes del panel.
